@@ -11,10 +11,6 @@ interface ObservatoryState {
   addExecution: (execution: Execution) => void;
   clearExecutions: () => void;
 
-  // WebSocket connection
-  wsConnected: boolean;
-  setWsConnected: (connected: boolean) => void;
-
   // Analytics cache
   analyticsSummary: AnalyticsSummary | null;
   setAnalyticsSummary: (summary: AnalyticsSummary) => void;
@@ -39,10 +35,6 @@ export const useObservatoryStore = create<ObservatoryState>((set) => ({
       recentExecutions: [execution, ...state.recentExecutions].slice(0, 100),
     })),
   clearExecutions: () => set({ recentExecutions: [] }),
-
-  // WebSocket connection
-  wsConnected: false,
-  setWsConnected: (connected) => set({ wsConnected: connected }),
 
   // Analytics cache
   analyticsSummary: null,

@@ -15,7 +15,7 @@ const hookConfig = `{
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/observatory.sh",
-            "timeout": 5
+            "timeout": 1
           }
         ]
       }
@@ -24,19 +24,11 @@ const hookConfig = `{
 }`;
 
 const hookScript = `#!/bin/bash
-# Observatory hook - sends tool usage to Observatory API
-# Save as: .claude/hooks/observatory.sh
-# Make executable: chmod +x .claude/hooks/observatory.sh
+# Observatory - Simple file-based capture (no server required)
+mkdir -p ~/.claude-observatory
+cat >> ~/.claude-observatory/events.jsonl`;
 
-# Read JSON input from stdin
-INPUT=$(cat)
-
-# Send to Observatory API (fire and forget)
-curl -s -X POST http://localhost:3001/api/hook \\
-  -H "Content-Type: application/json" \\
-  -d "$INPUT" > /dev/null 2>&1 &
-
-exit 0`;
+const eventsPath = '~/.claude-observatory/events.jsonl';
 
 export default function SettingsPage() {
   const [copiedConfig, setCopiedConfig] = useState(false);
@@ -72,16 +64,16 @@ export default function SettingsPage() {
           <Header title="Settings" />
 
           <div className="flex-1 overflow-auto p-6 space-y-6 max-w-3xl custom-scrollbar">
-            {/* API Configuration */}
+            {/* Data Location */}
             <div className="glass-card-hover rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <Settings2 className="h-5 w-5 text-neon-blue" />
                 <div>
                   <h3 className="font-display text-lg text-white tracking-wide">
-                    API CONFIGURATION
+                    DATA LOCATION
                   </h3>
                   <p className="text-xs font-mono text-gray-500 uppercase mt-1">
-                    Connection Settings
+                    File-based Capture
                   </p>
                 </div>
               </div>
@@ -89,25 +81,19 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 <div>
                   <label className="text-xs font-mono text-gray-400 uppercase tracking-wide">
-                    API URL
+                    Events File
                   </label>
                   <input
                     type="text"
-                    defaultValue="http://localhost:3001"
+                    defaultValue={eventsPath}
                     className="w-full mt-2 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-white font-mono text-sm focus:border-neon-blue/50 focus:outline-none"
                     readOnly
                   />
                 </div>
-                <div>
-                  <label className="text-xs font-mono text-gray-400 uppercase tracking-wide">
-                    WebSocket URL
-                  </label>
-                  <input
-                    type="text"
-                    defaultValue="ws://localhost:3001/ws"
-                    className="w-full mt-2 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-white font-mono text-sm focus:border-neon-blue/50 focus:outline-none"
-                    readOnly
-                  />
+                <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                  <p className="text-xs text-green-400">
+                    <strong>No server required for capture.</strong> Events are appended to a local file. Dashboard reads on refresh.
+                  </p>
                 </div>
               </div>
             </div>
@@ -179,8 +165,8 @@ export default function SettingsPage() {
 
               <div className="mt-4 p-4 rounded-xl bg-neon-purple/10 border border-neon-purple/20">
                 <p className="text-xs text-gray-300">
-                  <span className="text-neon-purple font-bold">Note:</span> The hook receives JSON on stdin with tool_name, tool_input, and tool_response.
-                  Run <code className="text-neon-blue">chmod +x .claude/hooks/observatory.sh</code> to make it executable.
+                  <span className="text-neon-purple font-bold">Setup:</span> Run <code className="text-neon-blue">chmod +x .claude/hooks/observatory.sh</code> to make it executable.
+                  That&apos;s it! Events are captured instantly with zero latency.
                 </p>
               </div>
             </div>

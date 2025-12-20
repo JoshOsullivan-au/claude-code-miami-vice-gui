@@ -1,8 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useObservatoryStore } from '@/lib/store';
-import { RefreshCw, Bell, Zap, Clock } from 'lucide-react';
+import { RefreshCw, Bell, FileText, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface HeaderProps {
@@ -10,8 +9,8 @@ interface HeaderProps {
 }
 
 export function Header({ title = 'Dashboard' }: HeaderProps) {
-  const { wsConnected } = useObservatoryStore();
   const [currentTime, setCurrentTime] = useState<string>('');
+  const [eventsCount, setEventsCount] = useState<number | null>(null);
 
   useEffect(() => {
     const updateTime = () => {
@@ -27,6 +26,24 @@ export function Header({ title = 'Dashboard' }: HeaderProps) {
     return () => clearInterval(interval);
   }, []);
 
+  // Fetch events count
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/api/events/stats');
+        if (res.ok) {
+          const data = await res.json();
+          setEventsCount(data.total);
+        }
+      } catch {
+        setEventsCount(null);
+      }
+    };
+    fetchCount();
+    const interval = setInterval(fetchCount, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <header className="flex h-16 items-center justify-between border-b border-white/10 px-6 glass-card">
       <div className="flex items-center gap-4">
@@ -35,7 +52,7 @@ export function Header({ title = 'Dashboard' }: HeaderProps) {
         </h1>
         <div className="hidden md:flex items-center gap-2 ml-4">
           <span className="text-xs text-gray-500 font-mono uppercase">Mode:</span>
-          <span className="text-xs text-neon-blue font-mono uppercase">MONITORING</span>
+          <span className="text-xs text-neon-blue font-mono uppercase">FILE CAPTURE</span>
         </div>
       </div>
 
@@ -48,14 +65,11 @@ export function Header({ title = 'Dashboard' }: HeaderProps) {
           </span>
         </div>
 
-        {/* Connection Status */}
+        {/* Events Count */}
         <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-black/30 border border-white/10">
-          <Zap className={`h-4 w-4 ${wsConnected ? 'text-green-400' : 'text-red-400'}`} />
-          <div className={wsConnected ? 'status-dot-online' : 'status-dot-offline'} />
-          <span className={`text-xs font-mono uppercase ${
-            wsConnected ? 'text-green-400' : 'text-red-400'
-          }`}>
-            {wsConnected ? 'LIVE' : 'OFFLINE'}
+          <FileText className="h-4 w-4 text-neon-pink" />
+          <span className="text-xs font-mono uppercase text-neon-pink">
+            {eventsCount !== null ? `${eventsCount} EVENTS` : 'LOADING...'}
           </span>
         </div>
 
@@ -66,13 +80,16 @@ export function Header({ title = 'Dashboard' }: HeaderProps) {
           className="relative hover:bg-white/5 text-gray-400 hover:text-neon-blue transition-colors"
         >
           <Bell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-neon-orange rounded-full animate-pulse" />
+          {eventsCount !== null && eventsCount > 0 && (
+            <span className="absolute top-1 right-1 w-2 h-2 bg-neon-orange rounded-full animate-pulse" />
+          )}
         </Button>
 
         <Button
           variant="ghost"
           size="icon"
           className="hover:bg-white/5 text-gray-400 hover:text-neon-pink transition-colors"
+          onClick={() => window.location.reload()}
         >
           <RefreshCw className="h-5 w-5" />
         </Button>
