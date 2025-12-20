@@ -32,16 +32,17 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${inter.variable} ${orbitron.variable} font-sans antialiased`}>
+        {/* Retro Grid Background - outside Providers to avoid hydration issues */}
+        <div className="retro-grid" aria-hidden="true" suppressHydrationWarning />
+
+        {/* Ambient Glow */}
+        <div
+          className="fixed top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-t from-purple-900 to-pink-600 rounded-full blur-[120px] opacity-20 -z-10 pointer-events-none"
+          aria-hidden="true"
+          suppressHydrationWarning
+        />
+
         <Providers>
-          {/* Retro Grid Background */}
-          <div className="retro-grid" aria-hidden="true" />
-
-          {/* Ambient Glow */}
-          <div
-            className="fixed top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-t from-purple-900 to-pink-600 rounded-full blur-[120px] opacity-20 -z-10 pointer-events-none"
-            aria-hidden="true"
-          />
-
           {children}
         </Providers>
       </body>
