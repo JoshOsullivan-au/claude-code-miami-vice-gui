@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
@@ -28,9 +29,15 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only rendering active states after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
-    <div className="flex h-full w-64 flex-col glass-card border-r border-white/10" suppressHydrationWarning>
+    <div className="flex h-full w-64 flex-col glass-card border-r border-white/10">
       {/* Logo Section */}
       <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6">
         <div className="relative">
@@ -50,7 +57,8 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 space-y-2 p-4 custom-scrollbar overflow-y-auto">
         {navigation.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          // Only check active state after mount to prevent hydration mismatch
+          const isActive = mounted && (pathname === item.href || pathname.startsWith(`${item.href}/`));
           return (
             <Link
               key={item.name}
@@ -64,7 +72,7 @@ export function Sidebar() {
             >
               <item.icon className={cn(
                 'h-5 w-5 transition-all',
-                isActive ? 'text-white' : 'text-gray-500 group-hover:text-neon-blue'
+                isActive ? 'text-white' : 'text-gray-500'
               )} />
               <span className={cn(
                 isActive ? 'font-display tracking-wide' : ''
