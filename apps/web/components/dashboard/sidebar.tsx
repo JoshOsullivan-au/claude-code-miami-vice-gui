@@ -30,7 +30,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full w-64 flex-col glass-card border-r border-white/10">
+    <div className="flex h-full w-64 flex-col glass-card border-r border-white/10" suppressHydrationWarning>
       {/* Logo Section */}
       <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6">
         <div className="relative">

@@ -33,6 +33,11 @@ app.get('/', (c) => {
   });
 });
 
+// Explicit health endpoint
+app.get('/health', (c) => {
+  return c.json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
+
 // Mount routes
 app.route('/api/sessions', sessionsRoutes);
 app.route('/api/executions', executionsRoutes);
@@ -79,8 +84,25 @@ console.log(`
 ╚════════════════════════════════════════════════════════════╝
 `);
 
+console.log('Started development server: http://localhost:' + port);
+
+// Bun server with WebSocket support
 export default {
   port,
-  fetch: app.fetch,
+  fetch(req: Request, server: any) {
+    const url = new URL(req.url);
+
+    // Handle WebSocket upgrade for /ws path
+    if (url.pathname === '/ws') {
+      const upgraded = server.upgrade(req);
+      if (upgraded) {
+        return undefined; // Bun handles the response
+      }
+      return new Response('WebSocket upgrade failed', { status: 400 });
+    }
+
+    // Handle regular HTTP requests with Hono
+    return app.fetch(req);
+  },
   websocket: websocketHandler,
 };
