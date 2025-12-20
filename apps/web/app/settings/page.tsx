@@ -42,16 +42,26 @@ export default function SettingsPage() {
   const [copiedConfig, setCopiedConfig] = useState(false);
   const [copiedScript, setCopiedScript] = useState(false);
 
-  const copyConfig = () => {
-    navigator.clipboard.writeText(hookConfig);
-    setCopiedConfig(true);
-    setTimeout(() => setCopiedConfig(false), 2000);
+  const copyConfig = async () => {
+    try {
+      await navigator.clipboard.writeText(hookConfig);
+      setCopiedConfig(true);
+      const timeout = setTimeout(() => setCopiedConfig(false), 2000);
+      return () => clearTimeout(timeout);
+    } catch (error) {
+      console.error('Failed to copy config:', error);
+    }
   };
 
-  const copyScript = () => {
-    navigator.clipboard.writeText(hookScript);
-    setCopiedScript(true);
-    setTimeout(() => setCopiedScript(false), 2000);
+  const copyScript = async () => {
+    try {
+      await navigator.clipboard.writeText(hookScript);
+      setCopiedScript(true);
+      const timeout = setTimeout(() => setCopiedScript(false), 2000);
+      return () => clearTimeout(timeout);
+    } catch (error) {
+      console.error('Failed to copy script:', error);
+    }
   };
 
   return (
@@ -197,7 +207,7 @@ export default function SettingsPage() {
                       Download all session data as JSON
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" className="gap-2">
+                  <Button variant="outline" size="sm" className="gap-2 opacity-50 cursor-not-allowed" disabled title="Coming soon">
                     <Download className="h-4 w-4" />
                     Export
                   </Button>
@@ -210,7 +220,7 @@ export default function SettingsPage() {
                       Delete all session and execution data
                     </p>
                   </div>
-                  <Button variant="destructive" size="sm" className="gap-2">
+                  <Button variant="destructive" size="sm" className="gap-2 opacity-50 cursor-not-allowed" disabled title="Coming soon">
                     <Trash2 className="h-4 w-4" />
                     Clear All
                   </Button>

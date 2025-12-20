@@ -2,10 +2,20 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
+import { z } from 'zod';
 import sessionsRoutes from './routes/sessions';
 import executionsRoutes from './routes/executions';
 import analyticsRoutes from './routes/analytics';
 import { websocketHandler, broadcast } from './websocket/handler';
+
+// Schema for Claude Code hook payload
+const hookPayloadSchema = z.object({
+  tool_name: z.string().optional(),
+  tool_input: z.record(z.unknown()).optional(),
+  tool_response: z.unknown().optional(),
+  session_id: z.string().optional(),
+  type: z.enum(['tool_use', 'execution_completed', 'session_start', 'session_end']).optional(),
+}).passthrough();
 
 // Create Hono app
 const app = new Hono();
@@ -46,11 +56,20 @@ app.route('/api/analytics', analyticsRoutes);
 // Hook endpoint for Claude Code hooks to call
 app.post('/api/hook', async (c) => {
   try {
-    const data = await c.req.json();
+    const rawData = await c.req.json();
+
+    // Validate payload with Zod
+    const parseResult = hookPayloadSchema.safeParse(rawData);
+    if (!parseResult.success) {
+      console.warn('Invalid hook payload:', parseResult.error.issues);
+      return c.json({ error: 'Invalid payload', issues: parseResult.error.issues }, 400);
+    }
+
+    const data = parseResult.data;
 
     // Broadcast to WebSocket clients
     broadcast({
-      type: data.type || 'execution_completed',
+      type: data.type || 'tool_use',
       data: data,
       timestamp: new Date().toISOString(),
     });
