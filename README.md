@@ -1,5 +1,8 @@
 # Claude Code Observatory
 
+<img width="1637" height="1559" alt="image" src="https://github.com/user-attachments/assets/3030e0d4-9955-4e2a-8f0a-0ce1920d0be6" />
+
+
 A locally-hosted dashboard for monitoring Claude Code executions, token usage, and cost analytics. Built with a Miami 80's retro aesthetic.
 
 ## Features
