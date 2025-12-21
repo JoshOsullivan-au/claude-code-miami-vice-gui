@@ -21,6 +21,10 @@ interface ObservatoryState {
 
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+
+  // Demo mode for screenshots
+  demoMode: boolean;
+  setDemoMode: (enabled: boolean) => void;
 }
 
 export const useObservatoryStore = create<ObservatoryState>((set) => ({
@@ -46,4 +50,8 @@ export const useObservatoryStore = create<ObservatoryState>((set) => ({
 
   sidebarOpen: true,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+
+  // Demo mode for screenshots
+  demoMode: false,
+  setDemoMode: (enabled) => set({ demoMode: enabled }),
 }));

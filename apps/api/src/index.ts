@@ -9,6 +9,10 @@ import { join } from 'path';
 import sessionsRoutes from './routes/sessions';
 import executionsRoutes from './routes/executions';
 import analyticsRoutes from './routes/analytics';
+import syncRoutes from './routes/sync';
+import mcpsRoutes from './routes/mcps';
+import liveRoutes from './routes/live';
+import agentsRoutes from './routes/agents';
 
 // Events file path
 const EVENTS_FILE = join(homedir(), '.claude-observatory', 'events.jsonl');
@@ -66,6 +70,10 @@ app.get('/health', (c) => {
 app.route('/api/sessions', sessionsRoutes);
 app.route('/api/executions', executionsRoutes);
 app.route('/api/analytics', analyticsRoutes);
+app.route('/api/sync', syncRoutes);
+app.route('/api/mcps', mcpsRoutes);
+app.route('/api/live', liveRoutes);
+app.route('/api/agents', agentsRoutes);
 
 // Events endpoint - reads from JSONL file
 app.get('/api/events', async (c) => {

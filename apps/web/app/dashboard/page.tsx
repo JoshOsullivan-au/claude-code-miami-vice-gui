@@ -19,27 +19,63 @@ const periodOptions = [
   { value: 'all', label: 'ALL TIME' },
 ] as const;
 
+// Mock data for demo/screenshot mode
+const mockSummary = {
+  sessions: { totalSessions: 12, activeSessions: 1, completedSessions: 11, totalDurationSeconds: 172800 },
+  tokens: { totalInputTokens: 2450000, totalOutputTokens: 890000, totalCost: 127.45 },
+};
+
+const mockSessions = {
+  sessions: [
+    { id: '1', model: 'sonnet', workingDirectory: 'projects/web-app', gitBranch: 'feature/dashboard', startTime: new Date(Date.now() - 86400000).toISOString(), totalTokens: 125000, totalCostUsd: 12.50, status: 'completed' },
+    { id: '2', model: 'opus', workingDirectory: 'projects/api-server', gitBranch: 'main', startTime: new Date(Date.now() - 172800000).toISOString(), totalTokens: 340000, totalCostUsd: 45.20, status: 'completed' },
+    { id: '3', model: 'opus', workingDirectory: 'projects/mobile-app', gitBranch: 'develop', startTime: new Date(Date.now() - 259200000).toISOString(), totalTokens: 280000, totalCostUsd: 38.90, status: 'completed' },
+    { id: '4', model: 'haiku', workingDirectory: 'projects/scripts', gitBranch: 'main', startTime: new Date(Date.now() - 345600000).toISOString(), totalTokens: 45000, totalCostUsd: 2.15, status: 'completed' },
+  ],
+};
+
+const mockDailyData = {
+  data: Array.from({ length: 14 }, (_, i) => ({
+    date: new Date(Date.now() - (13 - i) * 86400000).toISOString().split('T')[0],
+    inputTokens: Math.floor(Math.random() * 400000) + 100000,
+    outputTokens: Math.floor(Math.random() * 150000) + 50000,
+    thinkingTokens: Math.floor(Math.random() * 50000),
+  })),
+};
+
+const mockCosts = {
+  byDay: Array.from({ length: 14 }, (_, i) => ({
+    date: new Date(Date.now() - (13 - i) * 86400000).toISOString().split('T')[0],
+    cost: Math.floor(Math.random() * 2500) / 100 + 5,
+  })),
+  byModel: [
+    { model: 'opus', cost: 89.50, percentage: 70 },
+    { model: 'sonnet', cost: 32.15, percentage: 25 },
+    { model: 'haiku', cost: 5.80, percentage: 5 },
+  ],
+};
+
 export default function DashboardPage() {
-  const { selectedPeriod, setSelectedPeriod } = useObservatoryStore();
+  const { selectedPeriod, setSelectedPeriod, demoMode } = useObservatoryStore();
 
   const { data: summary } = useQuery({
-    queryKey: ['analytics-summary', selectedPeriod],
-    queryFn: () => api.getAnalyticsSummary(selectedPeriod),
+    queryKey: ['analytics-summary', selectedPeriod, demoMode],
+    queryFn: () => demoMode ? Promise.resolve(mockSummary) : api.getAnalyticsSummary(selectedPeriod),
   });
 
   const { data: sessions } = useQuery({
-    queryKey: ['sessions'],
-    queryFn: () => api.getSessions({ limit: 10 }),
+    queryKey: ['sessions', demoMode],
+    queryFn: () => demoMode ? Promise.resolve(mockSessions) : api.getSessions({ limit: 10 }),
   });
 
   const { data: dailyData } = useQuery({
-    queryKey: ['daily-data'],
-    queryFn: () => api.getDailyData(30),
+    queryKey: ['daily-data', demoMode],
+    queryFn: () => demoMode ? Promise.resolve(mockDailyData) : api.getDailyData(30),
   });
 
   const { data: costs } = useQuery({
-    queryKey: ['costs', selectedPeriod],
-    queryFn: () => api.getCosts(selectedPeriod),
+    queryKey: ['costs', selectedPeriod, demoMode],
+    queryFn: () => demoMode ? Promise.resolve(mockCosts) : api.getCosts(selectedPeriod),
   });
 
   return (
@@ -188,8 +224,39 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Live Feed */}
-        <LiveFeed />
+        {/* Live Feed - hidden in demo mode */}
+        {!demoMode && <LiveFeed />}
+        {demoMode && (
+          <div className="glass-card-hover rounded-2xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="status-dot-online" />
+              <h3 className="font-display text-lg text-white tracking-wide">LIVE ACTIVITY</h3>
+              <span className="text-xs font-mono text-gray-500 uppercase ml-2">Demo Mode</span>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-black/20">
+                <div className="w-8 h-8 rounded-lg bg-neon-orange/20 flex items-center justify-center">
+                  <Activity className="h-4 w-4 text-neon-orange" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-neon-orange font-mono">Bash</p>
+                  <p className="text-xs text-gray-500">npm run build</p>
+                </div>
+                <span className="text-xs text-gray-600">just now</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-black/20">
+                <div className="w-8 h-8 rounded-lg bg-neon-blue/20 flex items-center justify-center">
+                  <Activity className="h-4 w-4 text-neon-blue" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm text-neon-blue font-mono">Read</p>
+                  <p className="text-xs text-gray-500">src/components/App.tsx</p>
+                </div>
+                <span className="text-xs text-gray-600">2m ago</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

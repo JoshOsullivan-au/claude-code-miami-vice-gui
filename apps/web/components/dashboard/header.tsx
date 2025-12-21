@@ -1,8 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Bell, FileText, Clock } from 'lucide-react';
+import { RefreshCw, Bell, FileText, Clock, Eye, EyeOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useObservatoryStore } from '@/lib/store';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   title?: string;
@@ -11,6 +13,7 @@ interface HeaderProps {
 export function Header({ title = 'Dashboard' }: HeaderProps) {
   const [currentTime, setCurrentTime] = useState<string>('');
   const [eventsCount, setEventsCount] = useState<number | null>(null);
+  const { demoMode, setDemoMode } = useObservatoryStore();
 
   useEffect(() => {
     const updateTime = () => {
@@ -83,6 +86,20 @@ export function Header({ title = 'Dashboard' }: HeaderProps) {
           {eventsCount !== null && eventsCount > 0 && (
             <span className="absolute top-1 right-1 w-2 h-2 bg-neon-orange rounded-full animate-pulse" />
           )}
+        </Button>
+
+        {/* Demo Mode Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            'hover:bg-white/5 transition-colors',
+            demoMode ? 'text-neon-pink' : 'text-gray-400 hover:text-neon-pink'
+          )}
+          onClick={() => setDemoMode(!demoMode)}
+          title={demoMode ? 'Demo mode ON' : 'Demo mode OFF'}
+        >
+          {demoMode ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
         </Button>
 
         <Button

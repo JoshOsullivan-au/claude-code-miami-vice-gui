@@ -37,7 +37,7 @@ export function Sidebar() {
   }, []);
 
   return (
-    <div className="flex h-full w-64 flex-col glass-card border-r border-white/10">
+    <div className="flex h-full w-64 flex-col glass-card border-r border-white/10" suppressHydrationWarning>
       {/* Logo Section */}
       <div className="flex h-20 items-center gap-3 border-b border-white/10 px-6">
         <div className="relative">
@@ -46,19 +46,24 @@ export function Sidebar() {
         </div>
         <div className="flex flex-col">
           <span className="font-display text-lg tracking-wide text-white text-glow">
-            OBSERVATORY
+            MIAMI VICE
           </span>
           <span className="text-[10px] text-neon-blue font-mono uppercase tracking-widest">
-            Claude Code
+            Claude Code GUI
           </span>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-2 p-4 custom-scrollbar overflow-y-auto">
+      <nav className="flex-1 space-y-2 p-4 custom-scrollbar overflow-y-auto" suppressHydrationWarning>
         {navigation.map((item) => {
           // Only check active state after mount to prevent hydration mismatch
-          const isActive = mounted && (pathname === item.href || pathname.startsWith(`${item.href}/`));
+          // For /dashboard, only exact match. For others, allow sub-route matching.
+          const isActive = mounted && (
+            item.href === '/dashboard'
+              ? pathname === '/dashboard'
+              : pathname === item.href || pathname.startsWith(`${item.href}/`)
+          );
           return (
             <Link
               key={item.name}
@@ -69,6 +74,7 @@ export function Sidebar() {
                   ? 'bg-gradient-to-r from-neon-purple to-neon-pink text-white shadow-neon-pink'
                   : 'text-gray-400 hover:text-white hover:bg-white/5 hover:pl-5'
               )}
+              suppressHydrationWarning
             >
               <item.icon className={cn(
                 'h-5 w-5 transition-all',
@@ -79,7 +85,7 @@ export function Sidebar() {
               )}>
                 {item.name}
               </span>
-              {isActive && (
+              {item.href === '/dashboard/live' && isActive && (
                 <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               )}
             </Link>

@@ -1,109 +1,40 @@
-# Claude Code Observatory
+# Claude Code Miami Vice GUI
 
-<img width="1637" height="1559" alt="image" src="https://github.com/user-attachments/assets/3030e0d4-9955-4e2a-8f0a-0ce1920d0be6" />
+<img width="1637" alt="Dashboard Screenshot" src="https://github.com/user-attachments/assets/3030e0d4-9955-4e2a-8f0a-0ce1920d0be6" />
 
+A sleek, locally-hosted web dashboard for monitoring your Claude Code sessions in real-time. Track token usage, costs, agents, and live activity through a retro Miami 80's inspired interface.
 
-A locally-hosted dashboard for monitoring Claude Code executions, token usage, and cost analytics. Built with a Miami 80's retro aesthetic.
+**No API keys required. No external services. Everything runs locally.**
 
-## Features
+## What is this?
 
-- **Session Tracking**: Monitor all Claude Code sessions with start/end times, duration, and model used
-- **Token Analytics**: Track input/output tokens across Opus, Sonnet, and Haiku models
-- **Cost Monitoring**: Real-time and historical cost tracking with daily/weekly/monthly views
-- **Live Feed**: WebSocket-powered real-time activity stream
-- **Execution Logging**: Track tool calls, parameters, duration, and success/failure status
+Claude Code Miami Vice GUI is a browser-based monitoring dashboard that reads directly from Claude Code's local files. Open it alongside your terminal and watch your AI coding sessions unfold in real-time with neon-lit visualisations.
 
-## Tech Stack
+### Key Features
 
-### Frontend (`apps/web`)
-- **Framework**: Next.js 14 (App Router)
-- **UI Components**: shadcn/ui with custom retro theming
-- **Styling**: Tailwind CSS with Miami 80's design system
-- **State Management**: Zustand
-- **Data Fetching**: TanStack Query
-- **Charts**: Recharts
+| Feature | Description |
+|---------|-------------|
+| **Live Feed** | Watch thinking blocks, tool calls, and responses as they happen |
+| **Agent Tracking** | Monitor spawned sub-agents with auto-generated names and activity |
+| **Cost Analytics** | Track spending across Opus, Sonnet, and Haiku models |
+| **Token Usage** | Visualise input/output/cache tokens over time |
+| **MCP Servers** | View your configured Model Context Protocol servers |
+| **Session History** | Browse past sessions with execution logs |
 
-### Backend (`apps/api`)
-- **Runtime**: Bun
-- **Framework**: Hono
-- **Database**: SQLite with Drizzle ORM
-- **Real-time**: WebSocket (Bun native)
-- **Validation**: Zod
-
-### Shared (`packages/shared`)
-- TypeScript type definitions shared between frontend and backend
-
-## Miami 80's Design System
-
-The dashboard features a distinctive retro aesthetic:
-
-### Color Palette
-| Color | Hex | Usage |
-|-------|-----|-------|
-| Neon Pink | `#FF00FF` | Primary accent, CTAs |
-| Neon Blue | `#00FFFF` | Secondary accent, data |
-| Neon Purple | `#BD00FF` | Tertiary accent |
-| Neon Orange | `#FF9900` | Warnings, highlights |
-| Retro BG | `#0f0c29` | Background base |
-
-### Typography
-- **Display**: Righteous (headings, titles)
-- **Mono**: Orbitron (data, stats, timestamps)
-- **Sans**: Inter (body text)
-
-### Visual Effects
-- Glass card blur effects
-- Neon glow shadows
-- Animated perspective grid background
-- Custom scrollbars
-- Status dot indicators with pulse animations
-
-## Project Structure
-
-```
-claude-code-observatory/
-├── apps/
-│   ├── api/                    # Bun + Hono API server
-│   │   ├── src/
-│   │   │   ├── index.ts        # Server entry point
-│   │   │   ├── routes/         # API routes
-│   │   │   ├── db/             # Drizzle schema & connection
-│   │   │   └── websocket/      # WebSocket handlers
-│   │   └── drizzle/            # Database migrations
-│   │
-│   └── web/                    # Next.js dashboard
-│       ├── app/                # App Router pages
-│       │   ├── dashboard/      # Main dashboard
-│       │   ├── analytics/      # Analytics views
-│       │   └── settings/       # Settings page
-│       ├── components/
-│       │   ├── ui/             # shadcn components
-│       │   ├── charts/         # Recharts wrappers
-│       │   └── dashboard/      # Dashboard components
-│       ├── lib/                # Utilities, API client, store
-│       └── styles/             # Global CSS with retro system
-│
-├── packages/
-│   └── shared/                 # Shared TypeScript types
-│
-├── DESIGN-SYSTEM.md            # Design system documentation
-├── TEAM-ORCHESTRATION.md       # Development workflow docs
-├── turbo.json                  # Turborepo configuration
-└── package.json                # Root workspace config
-```
-
-## Installation
+## Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- Bun runtime (`curl -fsSL https://bun.sh/install | bash`)
 
-### Setup
+- **Node.js 18+**
+- **Bun runtime**: `curl -fsSL https://bun.sh/install | bash`
+- **Claude Code CLI** installed and used at least once
+
+### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/JoshOsullivan-au/claude-code-observatory.git
-cd claude-code-observatory
+git clone https://github.com/JoshOsullivan-au/claude-code-miami-vice-gui.git
+cd claude-code-miami-vice-gui
 
 # Install dependencies
 npm install --legacy-peer-deps
@@ -113,97 +44,87 @@ cd apps/api
 bun run db:generate
 bun run db:push
 cd ../..
+
+# Start the dashboard
+npm run dev
 ```
+
+Open your browser:
+- **Dashboard**: http://localhost:3000
+- **API**: http://localhost:3001
+
+## How It Works
+
+The dashboard reads directly from Claude Code's local storage:
+
+| Data Source | Location | Purpose |
+|-------------|----------|---------|
+| Stats Cache | `~/.claude/stats-cache.json` | Token usage and costs |
+| Transcripts | `~/.claude/projects/*/*.jsonl` | Session history and live events |
+| Agent Files | `~/.claude/projects/*/agent-*.jsonl` | Agent monitoring |
+| MCP Config | `~/.claude/mcp.json` | MCP server configuration |
+
+## Dashboard Pages
+
+| Page | Description |
+|------|-------------|
+| **Dashboard** | Overview with stats, charts, and recent activity |
+| **Sessions** | Browse all Claude Code sessions |
+| **Live Feed** | Real-time session monitoring with thinking visualisation |
+| **Token Costs** | Cost analytics and model breakdown |
+| **Agents** | Monitor spawned sub-agents (Explore, Plan, Code-Review) |
+| **MCPs** | View configured MCP servers |
+| **Analytics** | Historical charts and trends |
+
+## Demo Mode
+
+Click the eye icon in the header to toggle demo mode. This displays sample data instead of your actual usage - useful for screenshots or testing.
+
+## Tech Stack
+
+**Frontend**: Next.js 14, Tailwind CSS, shadcn/ui, Recharts
+**Backend**: Bun, Hono, SQLite, Drizzle ORM
+**Build**: Turborepo monorepo
+
+## Design System
+
+The Miami Vice aesthetic features:
+- **Neon Pink** `#FF00FF` - Primary accent
+- **Neon Blue** `#00FFFF` - Secondary accent
+- **Neon Purple** `#BD00FF` - Tertiary accent
+- **Glass cards** with blur effects
+- **Righteous** display font
+- **Orbitron** mono font for data
+
+## API Endpoints
+
+```
+GET  /api/live/current     - Current session with events
+GET  /api/live/sessions    - Active sessions
+GET  /api/agents           - List recent agents
+GET  /api/agents/stats     - Agent statistics
+GET  /api/mcps             - List MCP servers
+POST /api/sync/run         - Sync stats from Claude
+```
+
+## Troubleshooting
+
+**No data showing?**
+1. Ensure Claude Code has been used at least once
+2. Call `POST /api/sync/run` to sync data
+3. Check `~/.claude/stats-cache.json` exists
+
+**Live feed not updating?**
+1. Ensure a Claude Code session is active
+2. Check API is running on port 3001
 
 ## Development
 
 ```bash
-# Run both frontend and backend in development mode
-npm run dev
-
-# Or run individually:
-npm run dev --workspace=apps/web    # Frontend on http://localhost:3000
-npm run dev --workspace=apps/api    # API on http://localhost:3001
+npm run dev                          # Run both frontend and backend
+npm run dev --workspace=apps/web     # Frontend only
+npm run dev --workspace=apps/api     # API only
 ```
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| GET | `/api/sessions` | List all sessions |
-| GET | `/api/sessions/:id` | Get session details |
-| POST | `/api/sessions` | Create new session |
-| PATCH | `/api/sessions/:id` | Update session |
-| GET | `/api/analytics/summary` | Get analytics summary |
-| GET | `/api/analytics/daily` | Get daily data |
-| GET | `/api/costs` | Get cost breakdown |
-| WS | `/ws` | WebSocket for real-time updates |
-
-## Database Schema
-
-### Sessions
-- `id`: UUID primary key
-- `start_time`: Session start timestamp
-- `end_time`: Session end timestamp
-- `model`: Model used (opus/sonnet/haiku)
-- `working_directory`: Project path
-- `git_branch`: Git branch name
-- `total_tokens`: Cumulative token count
-- `total_cost_usd`: Cumulative cost
-- `status`: active/completed/failed
-
-### Executions
-- `id`: UUID primary key
-- `session_id`: Foreign key to sessions
-- `tool_name`: Name of tool called
-- `parameters`: JSON parameters
-- `duration_ms`: Execution duration
-- `input_tokens`: Input token count
-- `output_tokens`: Output token count
-- `status`: pending/completed/failed
-
-### Token Usage
-- `id`: UUID primary key
-- `session_id`: Foreign key to sessions
-- `model`: Model identifier
-- `input_tokens`: Input tokens used
-- `output_tokens`: Output tokens generated
-- `thinking_tokens`: Extended thinking tokens
-- `cache_read_tokens`: Cache read tokens
-- `cache_write_tokens`: Cache write tokens
-- `cost_usd`: Cost for this usage
-
-## Configuration
-
-### Environment Variables
-
-Create `.env` files in respective app directories:
-
-**apps/api/.env**
-```env
-DATABASE_URL=./observatory.db
-PORT=3001
-```
-
-**apps/web/.env.local**
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3001
-```
-
-## Roadmap
-
-- [x] Core monitoring dashboard
-- [x] Session and execution tracking
-- [x] Token usage analytics
-- [x] Cost breakdown charts
-- [x] Real-time WebSocket updates
-- [x] Miami 80's retro design system
-- [ ] Claude Code hooks integration
-- [ ] Thinking process visualization
-- [ ] n8n automation workflows
-- [ ] Export/reporting functionality
-- [ ] Budget alerts
 
 ## License
 
@@ -211,4 +132,4 @@ MIT
 
 ## Author
 
-Josh O'Sullivan - AI Institute
+Josh O'Sullivan - [AI Institute](https://instituteai.io)
