@@ -134,14 +134,14 @@ function AgentCard({ agent }: { agent: AgentInfo }) {
               <Terminal className="h-3 w-3" />
               {agent.toolCalls} tools
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1" suppressHydrationWarning>
               <Clock className="h-3 w-3" />
               {formatTime(agent.lastActivity)}
             </span>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-[10px] text-gray-600 font-mono">
+          <p className="text-[10px] text-gray-600 font-mono" suppressHydrationWarning>
             {formatDate(agent.startTime)}
           </p>
           <p className="text-[10px] text-gray-700 font-mono truncate max-w-[120px]">

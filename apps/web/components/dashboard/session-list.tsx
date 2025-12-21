@@ -118,7 +118,7 @@ export function SessionList({ sessions, onSelectSession, selectedSessionId }: Se
                     >
                       {session.model}
                     </span>
-                    <span className="text-xs text-gray-500 font-mono">
+                    <span className="text-xs text-gray-500 font-mono" suppressHydrationWarning>
                       {formatRelativeTime(new Date(session.startTime))}
                     </span>
                   </div>

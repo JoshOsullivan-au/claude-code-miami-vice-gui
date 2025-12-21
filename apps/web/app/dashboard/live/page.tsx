@@ -107,7 +107,7 @@ function EventCard({ event, expanded, onToggle }: { event: ParsedEvent; expanded
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm font-mono text-neon-purple">THINKING</span>
-              <span className="text-xs text-gray-600">{formatTime(event.timestamp)}</span>
+              <span className="text-xs text-gray-600" suppressHydrationWarning>{formatTime(event.timestamp)}</span>
               {expanded ? <ChevronDown className="h-3 w-3 text-gray-500" /> : <ChevronRight className="h-3 w-3 text-gray-500" />}
             </div>
             {expanded && event.thinking && (
@@ -139,7 +139,7 @@ function EventCard({ event, expanded, onToggle }: { event: ParsedEvent; expanded
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className={cn('text-sm font-mono', colors.text)}>{event.toolName}</span>
-              <span className="text-xs text-gray-600">{formatTime(event.timestamp)}</span>
+              <span className="text-xs text-gray-600" suppressHydrationWarning>{formatTime(event.timestamp)}</span>
               {expanded ? <ChevronDown className="h-3 w-3 text-gray-500" /> : <ChevronRight className="h-3 w-3 text-gray-500" />}
             </div>
             {event.toolInput && (
@@ -204,7 +204,7 @@ function EventCard({ event, expanded, onToggle }: { event: ParsedEvent; expanded
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-sm font-mono text-neon-blue">RESPONSE</span>
-              <span className="text-xs text-gray-600">{formatTime(event.timestamp)}</span>
+              <span className="text-xs text-gray-600" suppressHydrationWarning>{formatTime(event.timestamp)}</span>
               {(event.inputTokens || event.outputTokens) && (
                 <span className="text-xs text-gray-600 flex items-center gap-1">
                   <Coins className="h-3 w-3" />

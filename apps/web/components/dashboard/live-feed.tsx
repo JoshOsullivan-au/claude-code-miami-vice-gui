@@ -159,7 +159,7 @@ export function LiveFeed() {
                       </p>
                     )}
                   </div>
-                  <span className="text-xs text-gray-600 font-mono flex-shrink-0">
+                  <span className="text-xs text-gray-600 font-mono flex-shrink-0" suppressHydrationWarning>
                     {formatRelativeTime(new Date(event.timestamp))}
                   </span>
                 </div>
@@ -170,7 +170,7 @@ export function LiveFeed() {
       </div>
 
       {lastUpdated && (
-        <div className="mt-4 text-xs text-gray-600 font-mono text-center">
+        <div className="mt-4 text-xs text-gray-600 font-mono text-center" suppressHydrationWarning>
           Last updated: {lastUpdated.toLocaleTimeString()}
         </div>
       )}

@@ -63,8 +63,8 @@ export function Header({ title = 'Dashboard' }: HeaderProps) {
         {/* Live Clock */}
         <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-lg bg-black/30 border border-white/10">
           <Clock className="h-4 w-4 text-neon-blue" />
-          <span className="text-sm font-mono text-neon-blue tabular-nums">
-            {currentTime}
+          <span className="text-sm font-mono text-neon-blue tabular-nums" suppressHydrationWarning>
+            {currentTime || '--:--:--'}
           </span>
         </div>
 

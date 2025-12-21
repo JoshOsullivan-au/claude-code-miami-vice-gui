@@ -19,7 +19,7 @@ const periodOptions = [
   { value: 'all', label: 'ALL TIME' },
 ] as const;
 
-// Mock data for demo/screenshot mode
+// Mock data for demo/screenshot mode - static dates to avoid hydration mismatch
 const mockSummary = {
   sessions: { totalSessions: 12, activeSessions: 1, completedSessions: 11, totalDurationSeconds: 172800 },
   tokens: { totalInputTokens: 2450000, totalOutputTokens: 890000, totalCost: 127.45 },
@@ -27,27 +27,49 @@ const mockSummary = {
 
 const mockSessions = {
   sessions: [
-    { id: '1', model: 'sonnet', workingDirectory: 'projects/web-app', gitBranch: 'feature/dashboard', startTime: new Date(Date.now() - 86400000).toISOString(), totalTokens: 125000, totalCostUsd: 12.50, status: 'completed' },
-    { id: '2', model: 'opus', workingDirectory: 'projects/api-server', gitBranch: 'main', startTime: new Date(Date.now() - 172800000).toISOString(), totalTokens: 340000, totalCostUsd: 45.20, status: 'completed' },
-    { id: '3', model: 'opus', workingDirectory: 'projects/mobile-app', gitBranch: 'develop', startTime: new Date(Date.now() - 259200000).toISOString(), totalTokens: 280000, totalCostUsd: 38.90, status: 'completed' },
-    { id: '4', model: 'haiku', workingDirectory: 'projects/scripts', gitBranch: 'main', startTime: new Date(Date.now() - 345600000).toISOString(), totalTokens: 45000, totalCostUsd: 2.15, status: 'completed' },
+    { id: '1', model: 'sonnet', workingDirectory: 'projects/web-app', gitBranch: 'feature/dashboard', startTime: '2025-12-21T10:00:00Z', totalTokens: 125000, totalCostUsd: 12.50, status: 'completed' },
+    { id: '2', model: 'opus', workingDirectory: 'projects/api-server', gitBranch: 'main', startTime: '2025-12-20T10:00:00Z', totalTokens: 340000, totalCostUsd: 45.20, status: 'completed' },
+    { id: '3', model: 'opus', workingDirectory: 'projects/mobile-app', gitBranch: 'develop', startTime: '2025-12-19T10:00:00Z', totalTokens: 280000, totalCostUsd: 38.90, status: 'completed' },
+    { id: '4', model: 'haiku', workingDirectory: 'projects/scripts', gitBranch: 'main', startTime: '2025-12-18T10:00:00Z', totalTokens: 45000, totalCostUsd: 2.15, status: 'completed' },
   ],
 };
 
 const mockDailyData = {
-  data: Array.from({ length: 14 }, (_, i) => ({
-    date: new Date(Date.now() - (13 - i) * 86400000).toISOString().split('T')[0],
-    inputTokens: Math.floor(Math.random() * 400000) + 100000,
-    outputTokens: Math.floor(Math.random() * 150000) + 50000,
-    thinkingTokens: Math.floor(Math.random() * 50000),
-  })),
+  data: [
+    { date: '2025-12-08', inputTokens: 320000, outputTokens: 95000, thinkingTokens: 25000 },
+    { date: '2025-12-09', inputTokens: 280000, outputTokens: 110000, thinkingTokens: 30000 },
+    { date: '2025-12-10', inputTokens: 410000, outputTokens: 140000, thinkingTokens: 45000 },
+    { date: '2025-12-11', inputTokens: 195000, outputTokens: 78000, thinkingTokens: 18000 },
+    { date: '2025-12-12', inputTokens: 350000, outputTokens: 125000, thinkingTokens: 35000 },
+    { date: '2025-12-13', inputTokens: 480000, outputTokens: 165000, thinkingTokens: 42000 },
+    { date: '2025-12-14', inputTokens: 220000, outputTokens: 88000, thinkingTokens: 22000 },
+    { date: '2025-12-15', inputTokens: 390000, outputTokens: 132000, thinkingTokens: 38000 },
+    { date: '2025-12-16', inputTokens: 275000, outputTokens: 98000, thinkingTokens: 28000 },
+    { date: '2025-12-17', inputTokens: 445000, outputTokens: 155000, thinkingTokens: 48000 },
+    { date: '2025-12-18', inputTokens: 310000, outputTokens: 105000, thinkingTokens: 32000 },
+    { date: '2025-12-19', inputTokens: 365000, outputTokens: 118000, thinkingTokens: 36000 },
+    { date: '2025-12-20', inputTokens: 420000, outputTokens: 145000, thinkingTokens: 40000 },
+    { date: '2025-12-21', inputTokens: 255000, outputTokens: 92000, thinkingTokens: 24000 },
+  ],
 };
 
 const mockCosts = {
-  byDay: Array.from({ length: 14 }, (_, i) => ({
-    date: new Date(Date.now() - (13 - i) * 86400000).toISOString().split('T')[0],
-    cost: Math.floor(Math.random() * 2500) / 100 + 5,
-  })),
+  byDay: [
+    { date: '2025-12-08', cost: 18.50 },
+    { date: '2025-12-09', cost: 14.25 },
+    { date: '2025-12-10', cost: 22.80 },
+    { date: '2025-12-11', cost: 9.45 },
+    { date: '2025-12-12', cost: 16.70 },
+    { date: '2025-12-13', cost: 25.90 },
+    { date: '2025-12-14', cost: 11.30 },
+    { date: '2025-12-15', cost: 19.60 },
+    { date: '2025-12-16', cost: 13.85 },
+    { date: '2025-12-17', cost: 24.15 },
+    { date: '2025-12-18', cost: 15.40 },
+    { date: '2025-12-19', cost: 17.95 },
+    { date: '2025-12-20', cost: 21.50 },
+    { date: '2025-12-21', cost: 12.60 },
+  ],
   byModel: [
     { model: 'opus', cost: 89.50, percentage: 70 },
     { model: 'sonnet', cost: 32.15, percentage: 25 },
