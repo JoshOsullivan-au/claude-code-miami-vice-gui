@@ -85,8 +85,13 @@ export function Sidebar() {
               )}>
                 {item.name}
               </span>
-              {item.href === '/dashboard/live' && isActive && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              {item.href === '/dashboard/live' && (
+                <div
+                  className={cn(
+                    "ml-auto w-1.5 h-1.5 rounded-full bg-white animate-pulse transition-opacity",
+                    isActive ? 'opacity-100' : 'opacity-0'
+                  )}
+                />
               )}
             </Link>
           );

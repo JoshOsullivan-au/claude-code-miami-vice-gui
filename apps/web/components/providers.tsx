@@ -23,10 +23,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ThemeProvider
         attribute="class"
         defaultTheme="dark"
-        enableSystem
+        forcedTheme="dark"
         disableTransitionOnChange
       >
-        <TooltipProvider>{children}</TooltipProvider>
+        <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
